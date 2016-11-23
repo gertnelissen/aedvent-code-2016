@@ -11,9 +11,14 @@ Advent of Code is a series of small programming puzzles for a variety of skill l
 Example of folder structure:
 
 day 01
+
 -- joske - Erlang
+
 -- samson - Go
+
+
 day 02
+
 -- joske - JavaScript
 
 Any files which need to be ignored (IDE configuration settings) can be added to .gitignore in the root.
