@@ -11,13 +11,18 @@ import (
 
 func main() {
 	triangles := readInput()
+	countPossible(triangles)
+	partTwo()
+}
+
+func countPossible(triangles []triangle) {
 	count := 0
 	for _, t := range triangles {
 		if t.possible() {
 			count++
 		}
 	}
-	fmt.Printf("There are %v possible triangles", count)
+	fmt.Printf("There are %v possible triangles \n", count)
 }
 
 type triangle struct {
