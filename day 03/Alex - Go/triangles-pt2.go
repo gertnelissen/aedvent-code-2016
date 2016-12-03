@@ -1,9 +1,9 @@
 package main
 
 import (
-	"os"
-	"log"
 	"bufio"
+	"log"
+	"os"
 )
 
 func partTwo() {
@@ -26,9 +26,9 @@ func readInputVertically() []triangle {
 		lines[counter] = convertToTriangle(scanner.Text()) //Reusing old convert
 
 		if counter == 2 {
-			result = append(result, triangle{lines[0].a,lines[1].a, lines[2].a})
-			result = append(result, triangle{lines[0].b,lines[1].b, lines[2].b})
-			result = append(result, triangle{lines[0].c,lines[1].c, lines[2].c})
+			result = append(result, triangle{lines[0].a, lines[1].a, lines[2].a})
+			result = append(result, triangle{lines[0].b, lines[1].b, lines[2].b})
+			result = append(result, triangle{lines[0].c, lines[1].c, lines[2].c})
 			counter = 0
 		} else {
 			counter++
@@ -39,4 +39,3 @@ func readInputVertically() []triangle {
 	}
 	return result
 }
-

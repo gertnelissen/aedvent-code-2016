@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
-	"log"
 	"bufio"
 	"fmt"
-	"strings"
+	"log"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -26,11 +26,11 @@ func countPossible(triangles []triangle) {
 }
 
 type triangle struct {
-	a,b,c int
+	a, b, c int
 }
 
 func (t triangle) possible() bool {
-	return t.a + t.b > t.c && t.a + t.c > t.b && t.b + t.c > t.a
+	return t.a+t.b > t.c && t.a+t.c > t.b && t.b+t.c > t.a
 }
 
 func readInput() []triangle {
@@ -57,7 +57,7 @@ func convertToTriangle(input string) triangle {
 	return triangle{toInt(sides[0]), toInt(sides[1]), toInt(sides[2])}
 }
 
-func toInt (s string) int {
+func toInt(s string) int {
 	result, err := strconv.Atoi(s)
 	if err != nil {
 		panic(err)
