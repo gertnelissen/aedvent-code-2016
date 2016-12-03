@@ -8,8 +8,6 @@ Your favorite text editor may have a go plug-in:
 https://github.com/golang/go/wiki/IDEsAndTextEditorPlugins
 
 #To Run From Source
-`go run tolet.go
+`go run toilet.go`
 
-#Building an executable file
-
-`go build`
+`go run toilet-pt2.go`
