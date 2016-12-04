@@ -14,6 +14,7 @@ import (
 func main() {
 	rooms := readInput()
 	part1(rooms)
+	part2(rooms)
 }
 
 func part1(rooms []Room) {
@@ -28,7 +29,7 @@ func part1(rooms []Room) {
 
 type Room struct {
 	sector         int
-	top5, checksum string
+	top5, checksum, encrypted string
 }
 
 func (r Room) IsCorrect() bool {
@@ -54,7 +55,7 @@ func toRoom(line string) Room {
 	f := strings.Split(line, "-")
 	top := top5Chars(f[0 : len(f)-1])
 	sector, hash := sectorAndHash(f[len(f)-1])
-	return Room{sector, top, hash}
+	return Room{sector, top, hash,strings.Join(f[0: len(f)-1]," ")}
 }
 
 var re = regexp.MustCompile(`(?P<sector>\d{3})\[(?P<hash>\w{5})\]`)
