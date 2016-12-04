@@ -28,6 +28,6 @@ let (roomName, theRoom) =
     |> Seq.map parse
     |> Seq.filter realRoom
     |> Seq.map (fun room -> (decrypt room, room))
-    |> Seq.filter (fun (name, _) -> name.ToLower().Contains("pole"))
-    |> Seq.head
+    |> Seq.find (fun (name, _) -> name.ToLower().Contains("pole"))
+
 printfn "%s is located in %d" roomName theRoom.Zone
