@@ -3,13 +3,20 @@ package main
 import (
 	"crypto/md5"
 	"encoding/hex"
+	"flag"
 	"fmt"
 	"strings"
 )
 
 func main() {
-	input := "ffykfhsq"
-	part1(input)
+	input := flag.String("input", "ffykfhsq", "input string")
+	part := flag.Int("part", 1, "part 1 or 2?")
+	flag.Parse()
+	if *part == 1 {
+		part1(*input)
+	} else {
+		part2(*input)
+	}
 }
 
 func part1(input string) {
