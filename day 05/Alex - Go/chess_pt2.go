@@ -41,14 +41,9 @@ func part2(input string) {
 
 func dispatchPt2(prefix string, c chan PuzzlePiece, quit <-chan bool) {
 	i := 0
-	for {
-		select {
-		case <-quit:
-			return
-		default:
-			go findGoodHashPt2(prefix, i, c)
-			i++
-		}
+	routines := 20
+	for ; i < routines; i++ {
+		go findGoodHashPt2(prefix, i, routines, c, quit)
 	}
 }
 
@@ -57,12 +52,20 @@ type PuzzlePiece struct {
 	char     string
 }
 
-func findGoodHashPt2(prefix string, i int, c chan<- PuzzlePiece) {
-	clue := hash(prefix, i)
-	if strings.HasPrefix(clue, "00000") {
-		position, err := strconv.Atoi(string(clue[5]))
-		if err == nil && position < pwdLength {
-			c <- PuzzlePiece{position, string(clue[6])}
+func findGoodHashPt2(prefix string, i, increment int, c chan<- PuzzlePiece, quit <-chan bool) {
+	for {
+		select {
+		case <-quit:
+			return
+		default:
+			clue := hash(prefix, i)
+			if strings.HasPrefix(clue, "00000") {
+				position, err := strconv.Atoi(string(clue[5]))
+				if err == nil && position < pwdLength {
+					c <- PuzzlePiece{position, string(clue[6])}
+				}
+			}
+			i += increment
 		}
 	}
 }
