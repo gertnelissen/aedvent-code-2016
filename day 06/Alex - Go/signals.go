@@ -10,10 +10,15 @@ import (
 
 func main() {
 	input := readInput()
+	decodeInput(input, mostCommonChar)  //Part 1
+	decodeInput(input, leastCommonChar) //Part 2
+}
+
+func decodeInput(input [][]rune, decodeFn func([]rune, int, chan<- PuzzlePiece)) {
 	c := make(chan PuzzlePiece)
 	message := Message{0, len(input), make([]string, len(input))}
 	for i, letters := range input {
-		go mostCommonChar(letters, i, c)
+		go decodeFn(letters, i, c)
 	}
 	for !message.IsComplete() {
 		piece := <-c
