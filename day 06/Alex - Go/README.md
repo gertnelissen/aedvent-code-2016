@@ -2,6 +2,7 @@
 Day 6: Signals and Noise
 
 The code will print out the message according to part 1 and part 2.
+A smaller version is included in /minimal
 
 ## Installing Go
 See https://golang.org/
