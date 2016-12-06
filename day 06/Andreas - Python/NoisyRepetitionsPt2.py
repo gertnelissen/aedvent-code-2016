@@ -19,14 +19,14 @@ with open(fileName) as f:
 code = ""
 for freq in freqCols:
 	
-	maxChar = list(freq.keys())[0]
-	maxVal = freq[maxChar]
-	
-	for key in freq:
-		if freq[key] > maxVal:
-			maxChar = key
-			maxVal = freq[key]
+	minChar = list(freq.keys())[0]
+	minVal = freq[minChar]
 
-	code += maxChar
+	for key in freq:
+		if freq[key] < minVal:
+			minChar = key
+			minVal = freq[key]
+
+	code += minChar
 print(code)
 
