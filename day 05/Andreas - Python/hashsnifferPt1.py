@@ -7,7 +7,6 @@ from multiprocessing import Pool
 POOL_SIZE = 10
 BLOCK_SIZE = 1000000
 START_VAL = 0 #3231929
-SEARCH_CHAR = "0"
 
 #inputs
 testInput  = "abc"
@@ -51,11 +50,8 @@ def main():
     while(len(results) < 8):
         print("i: ", i, " -> " ,end="")
 
-        start = i * POOL_SIZE * BLOCK_SIZE
-        stop  = start + (POOL_SIZE * BLOCK_SIZE)
-
         pool = Pool(processes=POOL_SIZE)
-        job_results = pool.map( worker, range(POOL_SIZE) )
+        job_results = pool.map( worker, range(i * POOL_SIZE, (i+1) * POOL_SIZE) )
         pool.close()
         pool.join()
 
