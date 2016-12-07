@@ -37,8 +37,8 @@ let indexAndRelevantCharacter hash =
     
     (idx, theCharacter)
 
-let validIndexWithUpperLimit max index =
-    index >= 0 && index < max
+let between min max value =
+    value >= min && value < max
 
 let accumulateFirstHits accumulator (index, crackedChar) =
     if accumulator |> Map.containsKey index then
@@ -66,14 +66,12 @@ let findCode doorID =
     doorID
     |> interestingHashes
     |> Seq.map indexAndRelevantCharacter
-    |> Seq.filter (fst >> validIndexWithUpperLimit length)
+    |> Seq.filter (fst >> between 0 length)
     |> crack length
     |> Map.toSeq
     |> indexesWithCharactersToString
     |> toLower
 
 let secret = "reyedfim"
-printfn "Here we go!"
-let sw = System.Diagnostics.Stopwatch.StartNew()
+#time
 let solution = findCode secret
-printfn "It took me %A seconds to find %s" sw.Elapsed.TotalSeconds solution // 100s :(
