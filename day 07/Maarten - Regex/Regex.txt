@@ -1,0 +1,18 @@
+1) Maak een .txt file in notepad++ met je opgave
+2) Ga naar Mark (Search -> Mark...)
+3) Geef de regex "\[[^\]]*(\w)(\w)\2\1[^\]]*\]" in (zonder quotes)
+-> Find all ABBA's inside square brackets
+4) Search Mode -> Regular expression
+5) Vink 'Bookmark line' aan
+6) Mark All
+7) Search -> Bookmark -> Remove Bookmarked Lines
+8) Geef de regex "(\w)(\w)\2\1" in (zonder quotes)
+-> Find all ABBA's
+9) Mark All
+10) Search -> Bookmark -> Remove Unmarked Lines
+11) Ga naar Find (ctrl+F)
+12) Geef de regex "(\w)\1\1\1" in
+-> Find all AAAA's
+13) Find All in Current Document
+14) Verwijder de lijnen waar een match is en geen andere bookmarks
+15) Het aantal overblijvende lijnen is het antwoord
