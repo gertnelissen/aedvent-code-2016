@@ -14,11 +14,10 @@ let parse (iptext : string) =
         |> List.partition (fun (index, part) -> index % 2 = 0)
     { parts = evens |> List.map (snd >> List.ofSeq); hypernets = odds |> List.map (snd >> List.ofSeq) }
 
-let rec containsABBA ipPart = 
-    match ipPart with
-    | [] -> false
-    | a :: b :: c :: d :: _ when a = d && b = c && a <> b -> true
-    | _ :: t -> containsABBA t
+let containsABBA ipPart = 
+    ipPart
+    |> List.windowed 4
+    |> List.exists (function | [a;b;c;d] -> a = d && b = c && a <> b | _ -> false)
 
 let supportsTLS ip = 
     let anyABBA = List.exists containsABBA
@@ -33,7 +32,23 @@ test <@ "ioxxoj[asdfgh]zxcvbn" |> parse |> supportsTLS@>
 
 let input = "rhamaeovmbheijj[hkwbkqzlcscwjkyjulk]ajsxfuemamuqcjccbc
 gdlrknrmexvaypu[crqappbbcaplkkzb]vhvkjyadjsryysvj[nbvypeadikilcwg]jwxlimrgakadpxu[dgoanojvdvwfabtt]yqsalmulblolkgsheo
-dqpthtgufgzjojuvzvm[eejdhpcqyiydwod]iingwezvcbtowwzc[uzlxaqenhgsebqskn]wcucfmnlarrvdceuxqc[dkwcsxeitcobaylhbvc]klxammurpqgmpsxsr"
+dqpthtgufgzjojuvzvm[eejdhpcqyiydwod]iingwezvcbtowwzc[uzlxaqenhgsebqskn]wcucfmnlarrvdceuxqc[dkwcsxeitcobaylhbvc]klxammurpqgmpsxsr
+gmmfbtpprishiujnpdi[wedykxqyntvrkfdzom]uidgvubnregvorgnhm
+txxplravpgztjqcw[txgmmtlhmqpmmwp]bmhfgpmafxqwtrpr[inntmjmgqothdzfqgxq]cvtwvembpvdmcvk
+gkxjhpayoyrrpcr[mwyoahlkqyhtznyzrm]mvmurvsrgjunjjepn[mkoumuohilpcfgbmsmh]hpwggyvjkusjxcyojyr[wqxyuzbewpjzlyqmkhw]nniczueulxtdsmkniex
+vuzyoofrvaanszwndyt[mzcbhmabgnetrpje]tqnygwhmwrbyosbke[gehqzyhlnyufknqmueo]ngendggbjcvazwol
+vdnploylmxnipfudw[pbkxlaozhqhlbzz]kpxnzwjhybgcenyw[fpukiqrjraomftt]rosyxtsdltbsmhykxu[wrucjfwuyypmiic]ydnbgvicfnmwzuatudd
+lknaffpzamlkufgt[uvdgeatxkofgoyoi]ajtqcsfdarjrddrzo[bxrcozuxifgevmog]rlyfschtnrklzufjzm
+kajqeqlafxtmzirn[mkftybdukmghmyoclxd]plvjnikiozkikifpodt[cmufoktkndkhaeqbztz]drjixnnsdxqnrmn[cmzsnhlirtskunngcee]upgxlcjhmoethppx
+joibiixuzgtkjquor[xmnqotlqrhpvlglwaxe]kjmfrpihitjydwda
+kouyuiijgsmpzynmt[xvwuujrfkqjmtqdh]ukjscwcnwktrfvrmvew[quzbelbcfxknvqc]drtrmvnabjkslahadad
+hhlcltfpiwfjhguif[rpasuqltkbudhwjeew]mkcmvbxqukjczex
+xxqceycviwyzqxekn[tiidftrsnlgpesxlf]obtbqfgogpwkoqow[dabhpdntfvbhgtmupy]hbvtghnycgyywavqbtg
+zlqdqmuxebccmndzbl[ykefimjzdqdmfvlflj]ptlphteflzxmolkof
+babzuaikmedruqsuuv[emlhynmvfhsigdryo]iyblsqlpplrlahtwr
+byddropvzudnjciymyh[jcebyxyvikkshpn]ggmrxgkzsrfkfkzo
+ektijwczwnlancuqfv[luqhtfgwmlilhwnk]gxgivxlnerdhbhetfz[bzczfdorrsptzikjmct]mfrsvxgxijtusmvjd[sbpnwycbrykuhsinudc]bmpikuskzlxcoidp
+igefoemugshofmibco[uhahihzaglmzdpzjvfp]tfbuuhoughgismec[inbtuzxnxekfkulodyk]fxykxfkfnjvswwc"
 
 input.Split('\n')
 |> Seq.map parse

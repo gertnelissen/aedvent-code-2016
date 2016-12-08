@@ -15,30 +15,28 @@ let parse (iptext : string) =
     { supernets = evens |> List.map (snd >> List.ofSeq); hypernets = odds |> List.map (snd >> List.ofSeq) }
 
 let rec findABAsInSingle accumulator supernet =
-    match supernet with
-    | [] -> accumulator
-    | a :: b :: c :: rest when a = c && a <> b -> findABAsInSingle ((a,b,c) :: accumulator) (b :: c :: rest)
-    | _ :: rest -> findABAsInSingle accumulator rest
+    supernet
+    |> List.windowed 3
+    |> List.map (function | [a;b;c] -> (a,b,c) | _ -> failwith "Expected a list of three elements")
+    |> List.filter (fun (a,b,c) -> a = c && a <> b)
 
 let findABAs supernets =
     supernets
     |> List.collect (findABAsInSingle [])
     |> List.distinct
 
-let toBAB aba = 
-    let (a,b,c) = aba
-    (b,a,b)
+let toBAB (a,b,c) = (b,a,b) 
 
-let rec isPresentIn hypernet bab = 
+let isPresentIn hypernet bab = 
     let (a1,b1,c1) = bab
-    match hypernet with
-    | [] -> false
-    | a2 :: b2 :: c2 :: rest when a1 = a2 && b1 = b2 && c1 = c2 -> true
-    | _ :: rest -> isPresentIn rest bab
+    hypernet
+    |> List.windowed 3
+    |> List.exists (function | [a2;b2;c2] -> a1 = a2 && b1 = b2 && c1 = c2 | _ -> false)
 
 let containsAnyBAB babs hypernet =
     babs 
     |> List.exists (isPresentIn hypernet)
+
 let supportsSSL ip = 
     let allABAs = 
         findABAs ip.supernets
@@ -56,10 +54,17 @@ test <@ not ("xyx[xyx]xyx" |> parse |> supportsSSL) @>
 test <@ "aaa[kek]eke" |> parse |> supportsSSL @>
 test <@ "zazbz[bzb]cdb" |> parse |> supportsSSL @>
 
-let input = "rhamaeovmbheijj[hkwbkqzlcscwjkyjulk]ajsxfuemamuqcjccbc
-gdlrknrmexvaypu[crqappbbcaplkkzb]vhvkjyadjsryysvj[nbvypeadikilcwg]jwxlimrgakadpxu[dgoanojvdvwfabtt]yqsalmulblolkgsheo
-dqpthtgufgzjojuvzvm[eejdhpcqyiydwod]iingwezvcbtowwzc[uzlxaqenhgsebqskn]wcucfmnlarrvdceuxqc[dkwcsxeitcobaylhbvc]klxammurpqgmpsxsr
-gmmfbtpprishiujnpdi[wedykxqyntvrkfdzom]uidgvubnregvorgnhm"
+let input = "byddropvzudnjciymyh[jcebyxyvikkshpn]ggmrxgkzsrfkfkzo
+ektijwczwnlancuqfv[luqhtfgwmlilhwnk]gxgivxlnerdhbhetfz[bzczfdorrsptzikjmct]mfrsvxgxijtusmvjd[sbpnwycbrykuhsinudc]bmpikuskzlxcoidp
+igefoemugshofmibco[uhahihzaglmzdpzjvfp]tfbuuhoughgismec[inbtuzxnxekfkulodyk]fxykxfkfnjvswwc
+onmmhtsykubbpdiqvjm[kbfbiyjyuzmemaomkwa]prqwqocsihfnslooel[hysggeprqecalydywlk]taghiwhgnujsduhnffu[ibpvowghgttfsvt]wcajwcxhcriflxi
+evvhkvndeoxrrftqmih[ckxjgqvpdxjvmbwsor]odolgenlgaxujvqg[qyrnnrjgxskuxycoip]jvtjgwaaywdphxpy
+fffaewoawlzsmnqo[ubnpbqpxgenzjiytml]ztberlzwpzdvofcwo
+vhrwunprhbpclog[vqtnbjndcwpuyen]vzuudswovzmjviee
+yfeztpcfgazkijht[xqcjocbnjmvvrzg]maisokokpukpstgpj
+neudpatmnjayamydbrd[heckokdparzefxm]qulfvfivofznkyvkwq[owjrktbaejpffqef]oserqezusmubsertq
+ykgyzyqlodjvgqzmzy[ewsxadkknhduejft]yysinlpnxpaqdai[hqagzwigkpvzsje]auibbpljfmkoxaskuh
+kntmgvoypnpibjtp[ispxkdofjsdufpivwrj]ndecwlfcbjtrnrzw"
 
 input.Split('\n')
 |> Seq.map parse
