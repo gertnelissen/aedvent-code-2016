@@ -26,6 +26,16 @@ func main() {
 		command(lcd)
 	}
 	fmt.Printf("There are %v pixels lit up \n", lcd.count())
+	for _, row := range lcd {
+		for _, px := range row {
+			if px {
+				fmt.Print("X")
+			} else {
+				fmt.Print("_")
+			}
+		}
+		fmt.Printf("\n")
+	}
 }
 
 func matrix(x, y int) (result lcd) {
