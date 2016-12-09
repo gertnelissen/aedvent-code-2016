@@ -1,10 +1,7 @@
 package main.scala.Day09
 
 object Runner2 extends Runner {
-  override def replicate(replicator: (Int, Int), remainder: String): Long = {
-    val toReplicate = remainder.take(replicator._1)
-    val rest = remainder.substring(replicator._1)
-
-    (run(toReplicate) * replicator._2) + run(rest)
+  override def replicate(chars: Int, times: Int, remainder: String): Long = {
+    run(remainder.take(chars)) * times + run(remainder.substring(chars))
   }
 }
