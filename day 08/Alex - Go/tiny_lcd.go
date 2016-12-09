@@ -6,6 +6,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 const (
@@ -18,6 +19,7 @@ type lcd [][]bool
 var rotateExp, rectExp *regexp.Regexp
 
 func main() {
+	defer track(time.Now(), "lcd pt 1 and 2")
 	rotateExp = regexp.MustCompile(`rotate (?P<Entity>column|row) [xy]=(?P<Id>\d+) by (?P<Amount>\d+)`) //entity = 1, id = 2, amount = 3
 	rectExp = regexp.MustCompile(`rect (?P<x>\d+)x(?P<y>\d+)`)                                          //x =1, y = 2
 	lcd := matrix(wide, tall)
@@ -134,4 +136,9 @@ func readInput() (commands []func(lcd)) {
 		commands = append(commands, command(scanner.Text()))
 	}
 	return
+}
+
+func track(start time.Time, name string) {
+	elapsed := time.Since(start)
+	fmt.Printf("%s took %s \n", name, elapsed)
 }
