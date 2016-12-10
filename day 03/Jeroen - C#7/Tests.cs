@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,17 +34,17 @@ namespace Jeroen
         [InlineData(3, 4, 5, true)]
         public void Test(int x, int y, int z, bool expected)
         {
-            Assert.Equal(IsPossibleTriangle(x, y, z), expected);
+            Assert.Equal(IsPossibleTriangle((x, y, z)), expected);
         }
 
-        public bool IsPossibleTriangle(int x, int y, int z)
+        public bool IsPossibleTriangle((int x, int y, int z) triangle)
         {
-            return x + y > z
-                && y + z > x
-                && x + z > y;
+            return triangle.x + triangle.y > triangle.z
+                && triangle.y + triangle.z > triangle.x
+                && triangle.x + triangle.z > triangle.y;
         }
 
-        IEnumerable<string> ReadInputs()
+        IEnumerable<string> ReadInputs1()
         {
             var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("Jeroen.input.txt");
             using (var reader = new StreamReader(stream))
@@ -53,20 +54,66 @@ namespace Jeroen
                     yield return reader.ReadLine();
                 }
             }
+        }
 
+        IEnumerable<(int x, int y, int z)> GetTriangles()
+        {
+            return from line in ReadInputs1()
+            let triangle = (
+                int.Parse(line.Substring(2, 3).Trim()),
+                int.Parse(line.Substring(7, 3).Trim()),
+                int.Parse(line.Substring(12, 3).Trim())
+                )
+            select triangle;
         }
 
         [Fact]
         public void Day3Part1()
         {
-            var triangles = from line in ReadInputs()
-                            let x = int.Parse(line.Substring(2,3).Trim())
-                            let y = int.Parse(line.Substring(7,3).Trim())
-                            let z = int.Parse(line.Substring(12, 3).Trim())
-                            where IsPossibleTriangle(x, y, z)
-                            select line;
+            var triangles = from triangle in GetTriangles()
+                            where IsPossibleTriangle(triangle)
+                            select triangle;
             var count = triangles.Count();
             output.WriteLine(count.ToString());
+        }
+
+        [Fact]
+        public void Day3Part2()
+        {
+            var integers = from line in ReadInputs1()
+                           let x = int.Parse(line.Substring(2, 3).Trim())
+                           let y = int.Parse(line.Substring(7, 3).Trim())
+                           let z = int.Parse(line.Substring(12, 3).Trim())
+                           select (x, y, z);
+
+            var triangles = from chunk in GetTriangles().Chunk(3)
+                            from triangle in Transpose(chunk)
+                            where IsPossibleTriangle(triangle)
+                            select triangle;
+
+            var count = triangles.Count();
+            output.WriteLine(count.ToString());
+        }
+
+        private IEnumerable<(int x,int y,int z)> Transpose((int x, int y, int z)[] chunk)
+        {
+            yield return (chunk[0].x, chunk[1].x, chunk[2].x);
+            yield return (chunk[0].y, chunk[1].y, chunk[2].y);
+            yield return (chunk[0].z, chunk[1].z, chunk[2].z);
+        }
+    }
+
+    public static class Extensions
+    {
+        public static IEnumerable<T[]> Chunk<T>(this IEnumerable<T> items, int size)
+        {
+            T[] array = items as T[] ?? items.ToArray();
+            for (int i = 0; i < array.Length; i += size)
+            {
+                T[] chunk = new T[Math.Min(size, array.Length - i)];
+                Array.Copy(array, i, chunk, 0, chunk.Length);
+                yield return chunk;
+            }
         }
     }
 }
