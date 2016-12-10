@@ -1,4 +1,4 @@
-# Day 9 of Advent of Code 2016 in Go
+# Advent of Code 2016 in Go
 Day 10: Balance Bots
 http://adventofcode.com/2016/day/10
 
