@@ -16,17 +16,23 @@ namespace Jeroen.Day2
         }
 
         [Theory]
-        [InlineData(5, "ULL", 1)]
-        [InlineData(1, "RRDDD", 9)]
-        [InlineData(9, "LURDL", 8)]
-        [InlineData(8, "UUUUD", 5)]
-        public void Examples(int initial, string code, int expected)
+        [InlineData(1,1, "ULL", '1')]
+        [InlineData(0,0, "RRDDD", '9')]
+        [InlineData(2,2, "LURDL", '8')]
+        [InlineData(2,1, "UUUUD", '5')]
+        public void Examples(int row, int column, string code, char expected)
         {
-            var keypad = new Keypad(initial);
+            var keypad = new Keypad(new char?[,] {
+                { '1', '2', '3'},
+                { '4', '5', '6'},
+                { '7', '8', '9'},
+            }, new Coordinate(row, column));
+
             foreach (var c in code)
             {
                 keypad.Move(c);
             }
+
             Assert.Equal(expected, keypad.Current);
         }
 
@@ -41,7 +47,11 @@ namespace Jeroen.Day2
                     "UUUDLDDLRDLLLLRUUURDDLLURRUUURLUULLURUUDUDLDULULLRRRRLLLRDLLUDRUURDRURUDRURRLRLDRURLUDRLULRRURDDDURLLDULDLRRRDUUDDDRDLRUURRDRDRLRDLULRLDDRULRULDRDUDRUURLDLUDDULLLRURRLURLULDRRLUUURURLDLDDULLLRUUURDDDUURULULLUUUDUDRLLRRULUULDDDLLUDLURLLLRRULLURDRLUUDDLLDLLLUDULLRDRRRURDRUDUDUULUDURDLRUDLLRDDRURUDURLRULURDDURULLRDDRLRRDRLLULRDDDULRDLRULDDLRRDULDLUURRURUULRRDUURUDRRRRRLDULDLRURRULULDLRDDDRLLDURRULDUDUDRRRLUULRLUDURRRLRLDURRRRUULDRLUDDDUDURLURUDLLUDRDDDRLLURLRLDDURUUDDDUDUR",
                     "RURRRRURUDDRLURUDULRDUDDDUURULDRRRRURDLDRRLLDLUDLRRLRRUULLURULLRDLLRDDDDULLRLLDDLLRUDDULDUDLDURLRUULDDURURDURDLDRRULRURRRRRLRRLLUDURRURULRLRDLRLRRRLLURURDLLLDLDDULDLUDDLLLRUDDRDRLRUDRRLDDLRDLRLRLRLRRDUUURRUDRRLDLRRUULULLUDRRRUDLURDRUULDRDRRLUULULDDLURRLDULLURLDRLDULDRLLDLUUULLULRRDDRURRURLDLDRRLLLLLUDUURUULURLRDDDLRRRRLLLURUDLDDRDDRRUDURUULDRRULLLRRLRULLLRLDDLLRRLRURLRDRUDULLDDLDDDDDLDURURDLULRDDLRDLLRURLLRDLRUDDRDRRDURDURLUDRLDUDDDRRURRLUULURULLRLRDLRRLRURULLDDURLLRRRUDDRDLULURRRUUUULUULRRLLDLRUUURLLURLUURRLRL"
                 };
-            var keypad = new Keypad(5);
+            var keypad = new Keypad(new char?[,] {
+                { '1', '2', '3'},
+                { '4', '5', '6'},
+                { '7', '8', '9'},
+            }, new Coordinate(1, 1));
             var sb = new StringBuilder();
             foreach (var s in input)
             {
@@ -52,6 +62,27 @@ namespace Jeroen.Day2
                 sb.Append(keypad.Current);
             }
             output.WriteLine(sb.ToString());
+        }
+
+        [Fact]
+        public void Draft()
+        {
+            char?[,] keys = new char?[,]
+            {
+                {'1','2','3'},
+                {'4','5','6'},
+                {'7','8','9'}
+            };
+
+            (int row, int column) = (0, 0);
+            output.WriteLine(keys[row, column].ToString());
+            (row, column) = (1, 0);
+            output.WriteLine(keys[row, column].ToString());
+            (row, column) = (0, 1);
+            output.WriteLine(keys[row, column].ToString());
+
+
+
         }
 
 

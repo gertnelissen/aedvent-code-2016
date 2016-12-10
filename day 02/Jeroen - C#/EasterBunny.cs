@@ -4,42 +4,54 @@ using System.Collections.Generic;
 
 namespace Jeroen.Day2
 {
+    public struct Coordinate
+    {
+        public readonly int Row;
+        public readonly int Column;
+
+        public Coordinate(int row, int column)
+        {
+            Row = row;
+            Column = column;
+        }
+        public Coordinate Left() => new Coordinate(Row, Column - 1);
+        public Coordinate Right() => new Coordinate(Row, Column + 1);
+        public Coordinate Up() => new Coordinate(Row - 1, Column);
+        public Coordinate Down() => new Coordinate(Row + 1, Column);
+        public Coordinate Move(char direction)
+        {
+            switch (direction)
+            {
+                case 'U': return Up();
+                case 'D': return Down();
+                case 'L': return Left();
+                case 'R': return Right();
+            }
+            throw new InvalidOperationException();
+        }
+    }
+
     public class Keypad
     {
-        public Keypad(int initial)
+        char?[,] _keys;
+        Coordinate _coordinate;
+
+        public Keypad(char?[,] keys, Coordinate coordinate)
         {
-            Current = initial;
+            _keys = keys;
+            _coordinate = coordinate;
         }
 
-        public int Current { get; private set; }
+        public char? Current => _keys[_coordinate.Row, _coordinate.Column];
 
         public void Move(char direction)
         {
-            // 1 2 3
-            // 4 5 6
-            // 7 8 9
-
-            switch (direction)
-            {
-                case 'U' when new[] { 1, 2, 3}.Contains(Current):
-                case 'L' when new[] { 1, 4, 7 }.Contains(Current):
-                case 'D' when new[] { 7, 8, 9 }.Contains(Current):
-                case 'R' when new[] { 3, 6, 9 }.Contains(Current):
-                    Current = Current;
-                    break;
-                case 'U':
-                    Current = Current - 3;
-                    break;
-                case 'D':
-                    Current = Current + 3;
-                    break;
-                case 'L':
-                    Current = Current - 1;
-                    break;
-                case 'R':
-                    Current = Current + 1;
-                    break;
-            }
+            var next = _coordinate.Move(direction);
+            if (
+                next.Row >= 0 && next.Row < _keys.GetLength(0)
+                && next.Column >= 0 && next.Column < _keys.GetLength(1)
+                )
+                _coordinate = next;
         }
     }
 }
