@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Jeroen.Day1
@@ -33,28 +34,37 @@ namespace Jeroen.Day1
     class Navigator
     {
         private readonly Compass _compass = new Compass();
-
-        private (int x,int y) _position;
+        private readonly HashSet<(int x, int y)> _visits = new HashSet<(int x, int y)>(new[]{(0,0)});
+        private (int x, int y) _position;
+        private (int x, int y)? _remember;
 
         public int Blocks => Math.Abs(_position.x) + Math.Abs(_position.y);
+        public int? Part2 => _remember.HasValue ? (int?)Math.Abs(_remember.Value.x) + Math.Abs(_remember.Value.y) : null;
+
         public void Head(Direction direction, int distance)
         {
             _compass.Turn(direction);
 
-            switch (_compass.Bearing)
+            for (int i = 0; i < distance; i++)
             {
-                case Bearing.N:
-                    _position = (_position.x, _position.y + distance);
-                    break;
-                case Bearing.E:
-                    _position = (_position.x + distance, _position.y);
-                    break;
-                case Bearing.S:
-                    _position = (_position.x, _position.y - distance);
-                    break;
-                case Bearing.W:
-                    _position = (_position.x - distance, _position.y);
-                    break;
+                switch (_compass.Bearing)
+                {
+                    case Bearing.N:
+                        _position = (_position.x, _position.y + 1);
+                        break;
+                    case Bearing.E:
+                        _position = (_position.x + 1, _position.y);
+                        break;
+                    case Bearing.S:
+                        _position = (_position.x, _position.y - 1);
+                        break;
+                    case Bearing.W:
+                        _position = (_position.x - 1, _position.y);
+                        break;
+                }
+                if (!_remember.HasValue && _visits.Contains(_position))
+                    _remember = _position;
+                _visits.Add(_position);
             }
         }
 
