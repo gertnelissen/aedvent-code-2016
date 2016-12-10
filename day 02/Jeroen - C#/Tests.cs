@@ -15,54 +15,65 @@ namespace Jeroen.Day2
             this.output = output;
         }
 
-        [Theory]
-        [InlineData(1,1, "ULL", '1')]
-        [InlineData(0,0, "RRDDD", '9')]
-        [InlineData(2,2, "LURDL", '8')]
-        [InlineData(2,1, "UUUUD", '5')]
-        public void Examples(int row, int column, string code, char expected)
-        {
-            var keypad = new Keypad(new char?[,] {
+        Keypad keypad1 = new Keypad(new char?[,] {
                 { '1', '2', '3'},
                 { '4', '5', '6'},
                 { '7', '8', '9'},
-            }, new Coordinate(row, column));
+            }, new Coordinate(1, 1));
 
-            foreach (var c in code)
-            {
-                keypad.Move(c);
-            }
-
-            Assert.Equal(expected, keypad.Current);
-        }
+        string[] testinputs = new[]
+        {
+            "ULL", "RRDDD", "LURDL", "UUUUD"
+        };
 
         [Fact]
-        public void Day2Part1()
+        public void ExamplesPart1()
         {
-            string[] input = new[]
-                {
+            var code = GetCode(testinputs, keypad1);
+            Assert.Equal("1985", code);
+        }
+
+
+        [Fact]
+        public void ExamplesPart2()
+        {
+            var code = GetCode(testinputs, keypad2);
+            Assert.Equal("5DB3", code);
+        }
+
+        string[] input = new[]
+    {
                     "LUULRUULULLUDUDULDLUDDDLRURUDLRRDRDULRDDULLLRULLLURDDLRDLUUDDRURDDRDDDDRDULULLLLURDDLLRLUUDDDRLRRRDURLDDLRRLDUDRRRDLDLRRDLDLUURRLRULLULRUDRDLRUURLDRDLRLDULLLUDRDDRLURLUUDRLLLDRUUULLUULRUDDUDRDUURRRUDRLDDUURDUURUDRDDLULDDUDUDRRDDULUDULRDRULRLRLURURDULRUULLRDDDDRRUUDDDUUDRLLRUDRLRDLRRLULRLULRUDDULRLLLURLDDRLDDLRRLDRDDDRRLRUDRULUUDUURLDLRRULUDRDULDLLRRURRDDLRRRLULUDUUDDUDDLRDLRDRLRLDUDUDDUDLURRUURDRLRURLURRRLRLRRUDDUDDLUDRLUURUUDUUDDULRRLUUUDRLRLLUR",
                     "LDLLRRLDULDDRDDLULRRRDDUDUDRRLLRUUULRUDLLRRDDRRLDDURUUDLUDRRLDURDDRUDLUDUUDLDLLLDLLLDRLLDLRUULULLUUDULDUUULDDLRUDLLUDLUUULDRLUDRULUUDLDURDLDUULLRDUDRDLURULDLUUUDURLDDRLLDRLRDDDUDRUULLDLUDRRDDLDLUURUDDLDRURRLULUDDURLDRDRDUDDRRULRLDURULULRURDUURRUDRDDRDRLDRDUUDLRULRDDDULRURUDRUUULUUDDLRRDDDUDRLRUDRDLRRUDLUDRULDDUDLRLDDLDRLRDLULRDRULRLLRLUDUURULLLDDUULUUDDDUDRRULDDDULRUDRRLRLLLUDLULDUUULDDULDUUDLUULRDLDUDRUDLLDLDLLULDDDDLUDDUDRUDLRRRDDDDDLLRRDRUUDDDRRULRUDUUDRULLDLLLDDRDDUURLUUURUDRUDURLRUUUULUUURDRRRULDUULDLDDDRDDDDLLDRUDRDURLDDURDURULDDRLLRRLDUDRDURRLDRDLLULUUUD",
                     "LDDLRLRDDRLRUDDRDDUDRULUUULULDULRUULLRRDUULRDUUDDDRRULDDUDRLLLDULURDLDDRLLRURULULDLDULRDLDLRULUDLLDRUDLDURRDULDDRLRURDLLUDRDDDUDLUDULURULRDRLRULDLLRLDRRUDRDRUDRLDLRLUUURURRRLDDULLULLLRLRLULDLLRLDDRLDULURULRUURRUUURRUDRLRRURURDDDRULDULDLDLRRRLLDDRRURRULULULDRDULDRRULDUDRRLDULDRDURRDULLRRRLLLLRRLLRRRDRURDUULLURURURDDRRDRLLLULRRRDRLDRLDRDLLRUUDURRDRRDLLUDLDRLRLDLUDRDULRULRRLLRDLULDRLUDUUULLDRULDDLLRDUUUDRUUUUULUURDDLLDUURURRURLLURRDDUDUDRUUDDRDDRRLRLULRLRRRDRLLRRLLLDUULLUUDDLULLLDURRLLDRLDRDRLRRLRRULRRRRLRRRRRURUDULUULRDLLDRLRRDUURDRRUDRURRRDDRLDDLRLUDRDRDRRLDDDRDDRRRDUDULRURRDRDLLDRUD",
                     "UUUDLDDLRDLLLLRUUURDDLLURRUUURLUULLURUUDUDLDULULLRRRRLLLRDLLUDRUURDRURUDRURRLRLDRURLUDRLULRRURDDDURLLDULDLRRRDUUDDDRDLRUURRDRDRLRDLULRLDDRULRULDRDUDRUURLDLUDDULLLRURRLURLULDRRLUUURURLDLDDULLLRUUURDDDUURULULLUUUDUDRLLRRULUULDDDLLUDLURLLLRRULLURDRLUUDDLLDLLLUDULLRDRRRURDRUDUDUULUDURDLRUDLLRDDRURUDURLRULURDDURULLRDDRLRRDRLLULRDDDULRDLRULDDLRRDULDLUURRURUULRRDUURUDRRRRRLDULDLRURRULULDLRDDDRLLDURRULDUDUDRRRLUULRLUDURRRLRLDURRRRUULDRLUDDDUDURLURUDLLUDRDDDRLLURLRLDDURUUDDDUDUR",
                     "RURRRRURUDDRLURUDULRDUDDDUURULDRRRRURDLDRRLLDLUDLRRLRRUULLURULLRDLLRDDDDULLRLLDDLLRUDDULDUDLDURLRUULDDURURDURDLDRRULRURRRRRLRRLLUDURRURULRLRDLRLRRRLLURURDLLLDLDDULDLUDDLLLRUDDRDRLRUDRRLDDLRDLRLRLRLRRDUUURRUDRRLDLRRUULULLUDRRRUDLURDRUULDRDRRLUULULDDLURRLDULLURLDRLDULDRLLDLUUULLULRRDDRURRURLDLDRRLLLLLUDUURUULURLRDDDLRRRRLLLURUDLDDRDDRRUDURUULDRRULLLRRLRULLLRLDDLLRRLRURLRDRUDULLDDLDDDDDLDURURDLULRDDLRDLLRURLLRDLRUDDRDRRDURDURLUDRLDUDDDRRURRLUULURULLRLRDLRRLRURULLDDURLLRRRUDDRDLULURRRUUUULUULRRLLDLRUUURLLURLUURRLRL"
                 };
-            var keypad = new Keypad(new char?[,] {
-                { '1', '2', '3'},
-                { '4', '5', '6'},
-                { '7', '8', '9'},
-            }, new Coordinate(1, 1));
-            var sb = new StringBuilder();
-            foreach (var s in input)
-            {
-                foreach (var c in s)
-                {
-                    keypad.Move(c);
-                }
-                sb.Append(keypad.Current);
-            }
-            output.WriteLine(sb.ToString());
+
+        [Fact]
+        public void Day2Part1()
+        {
+            var code = GetCode(input, keypad1);
+            output.WriteLine(code);
         }
+
+        Keypad keypad2 = new Keypad(new char?[,] {
+                { null, null, '1', null, null},
+                { null, '2', '3', '4', null},
+                { '5', '6', '7', '8', '9'},
+                { null, 'A', 'B', 'C', null},
+                { null, null, 'D', null, null},
+            }, new Coordinate(2, 0));
+
+
+
+        [Fact]
+        public void Day2Part2()
+        {
+            var code = GetCode(input, keypad2);
+            output.WriteLine(code);
+        }
+
 
         [Fact]
         public void Draft()
@@ -85,6 +96,19 @@ namespace Jeroen.Day2
 
         }
 
+        private static string GetCode(string[] inputs, Keypad keypad)
+        {
+            var sb = new StringBuilder();
+            foreach (var input in inputs)
+            {
+                foreach (var c in input)
+                {
+                    keypad.Move(c);
+                }
+                sb.Append(keypad.Current);
+            }
+            return sb.ToString();
+        }
 
 
     }
