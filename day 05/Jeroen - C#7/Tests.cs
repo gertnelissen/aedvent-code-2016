@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -37,7 +38,7 @@ namespace Jeroen
         public void TestPart1()
         {
             var cracker = new Cracker();
-            var password = cracker.GeneratePassword("abc", 8);
+            var password = cracker.GeneratePassword1("abc", 8);
             Assert.Equal("18f47a30", password);
         }
 
@@ -72,7 +73,7 @@ namespace Jeroen
             return hash[0] == 0 && hash[1] == 0 && (hash[2] & 0x0F) == hash[2];
         }
 
-        internal string GeneratePassword(string input, int length)
+        internal string GeneratePassword1(string input, int length)
         {
             StringBuilder sb = new StringBuilder();
             var doorid = input;
@@ -94,6 +95,39 @@ namespace Jeroen
             var password = sb.ToString();
             return password;
         }
+        internal string GeneratePassword2(string input, int length)
+        {
+            var sb = Enumerable.Repeat('_', 8).ToArray();
+            Console.Write("decrypting... " + new string(sb).ToLower());
+            var doorid = input;
+            int i = 0;
+            while (true)
+            {
+                var s = $"{doorid}{i}";
+                var hash = _md5.ComputeHash(Encoding.ASCII.GetBytes(s));
+                if (StartsWith5Zeroes(hash))
+                {
+                    var str = BitConverter.ToString(hash).Replace("-", "");
+                    if (
+                        int.TryParse(str.Substring(5, 1), out int position)
+                        && position >= 0 && position < 8 && sb[position] == '_'
+                        )
+                    {
+                        sb[position] = str[6];
+                        Console.SetCursorPosition(0, 0);
+                        Console.Write("decrypting... " + new string(sb).ToLower());
+                    }
+                }
+                if (sb.All(c => c != '_'))
+                    break;
+                i++;
+            }
+            Console.SetCursorPosition(0, 0);
+            Console.Write("Done! pasword is :" + new string(sb).ToLower());
+            Console.WriteLine();
+            var password = sb.ToString();
+            return password;
+        }
     }
 
     public static class Program
@@ -101,7 +135,9 @@ namespace Jeroen
         public static void Main()
         {
             var cracker = new Cracker();
-            cracker.GeneratePassword("ugkcyxxp", 8);
+            //cracker.GeneratePassword1("ugkcyxxp", 8);
+            cracker.GeneratePassword2("ugkcyxxp", 8);
+            //cracker.GeneratePassword2("abc", 8);
         }
     }
 }
