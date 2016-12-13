@@ -2,7 +2,7 @@
 registers = {
 	'a': 0,
 	'b': 0,
-	'c': 0,
+	'c': 1, #0 for part 1 and 1 for part 2
 	'd': 0
 }
 
@@ -45,10 +45,6 @@ with open("realInput.txt") as f:
 	for line in f.readlines():
 		instructions.append(line.strip().split(" "))
 
-#optimize instructions
-
-
-
 #execute
 i = 0
 while i < len(instructions):
@@ -63,3 +59,7 @@ while i < len(instructions):
 		instr[1], 
 		instr[2] if len(instr) >= 3 else 1
 	)
+
+print()
+print()
+print(registers['a'], " | ", registers['b'], " | ", registers['c'], " | ", registers['d'])
