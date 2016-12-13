@@ -11,7 +11,8 @@ namespace Jeroen
         {
             var query = from input in InputReader.Actual()
                         let ip = new IPAddress(input)
-                        where ip.SupportsTLS()
+                        //where ip.SupportsTLS()
+                        where ip.SupportsSSL()
                         select ip;
             
             Console.WriteLine(query.AsParallel().Count().ToString());
