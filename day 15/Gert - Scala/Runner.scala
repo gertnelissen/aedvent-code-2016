@@ -8,12 +8,7 @@ object Runner {
   type config = List[Gear]
 
   def run(config: List[Gear]): Int = {
-    Stream.from(0).foreach(i => {
-      if(fallThrough(i, config))
-        return i
-    })
-
-    -1
+    Stream.from(0).find(timeTick => fallThrough(timeTick, config)).get
   }
 
   def fallThrough(delay: Int, config: List[Gear]): Boolean = {
