@@ -19,6 +19,7 @@ let containsNInARow times letter word =
 
 let (|NInARowOf|_|) times word = 
     word
+    |> Seq.distinct
     |> Seq.map string
     |> Seq.tryFind(fun letter -> containsNInARow times letter word)
 
@@ -54,8 +55,9 @@ let stretchedKeys salt =
     |> Seq.windowed (1 + 1000)
     |> Seq.map (fun hashes -> (Seq.head hashes, Seq.tail hashes))
     |> Seq.filter validHash
+    |> Seq.indexed
     //|> debug
-    |> Seq.map (fst >> fst)
+    |> Seq.map (snd >> fst >> fst)
 
 printfn "Testing..."
 test <@ keys "abc" |> Seq.take 2 |> Seq.toList = [39; 92] @>
@@ -64,6 +66,10 @@ test <@ stretch (hash "abc0") =  "a107ff634856bb300138cac6568c0f24" @>
 test <@ stretchedKeys "abc" |> Seq.take 1 |> Seq.toList = [10] @>
 printfn "Done!"
 
-keys "ngcjuoqr" |> Seq.take 64 |> Seq.last
+let secret = "ngcjuoqr"
+//let secret = "ihaygndm"
+
+keys secret |> Seq.take 64 |> Seq.last
 printfn "Going for a stretch..."
-stretchedKeys "ngcjuoqr" |> Seq.take 64 |> Seq.last
+#time
+stretchedKeys secret |> Seq.take 64 |> Seq.last
