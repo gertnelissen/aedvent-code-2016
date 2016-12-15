@@ -33,7 +33,7 @@ class State:
         #=> invalid : find a chip that is with another generator
         i = 0
         while i < len(self.pairs):
-            j = i
+            j = i + 1
             while j < len(self.pairs):
 
                 if self.pairs[i][0] != self.pairs[i][1] \
@@ -42,6 +42,8 @@ class State:
 
                 j+=1
             i+=1
+
+        return True
 
     def getAdjacent(self):
         #get stuffz at current floor
@@ -56,7 +58,7 @@ class State:
             for g in range(len(currGenerators) + 1):
             
                 if g+c > 0 and g+c <= 2: #elevator must carry at least 1 item and cannot carry more than 2 items
-                
+                    
                     #add new states
                     for chosenChips in combinations(currChips,c):
                         for chosenGens in combinations(currGenerators, g):
@@ -77,6 +79,8 @@ class State:
                                     distance  = self.distance  + 1,
                                     pairs     = newPairs
                                 )
+
+                                #newState.print()
 
                                 if newState.isValid():
                                     adjStates.append(newState)
@@ -103,16 +107,23 @@ class State:
         return adjStates
 
     def hash(self):
-        var = str(self.currFloor)
+        var = str(self.currFloor) + "|"
         for pair in self.pairs:
-            var+= str(pair[0]) + str(pair[1])
+            var+= str(pair[0]) + str(pair[1]) + "|"
         return var
 
+    def print(self):
+        print(self.currFloor,  " -> ", self.pairs, " {", self.distance, "}")
 
 
 #hardcoded start state
 testStartState = State(0,0, [[0,1],[0,2]])
+testStartState.print()
 print(testStartState.hash())
+for state in testStartState.getAdjacent():
+    state.print()
+
+sys.exit()
 
 seen = dict()
 paths = queue.Queue()
