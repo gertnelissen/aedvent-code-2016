@@ -1,5 +1,6 @@
 import queue
 import sys
+from copy import deepcopy
 from itertools import combinations
 
 FLOOR_COUNT = 4
@@ -14,8 +15,8 @@ class State:
         self.distance = distance
 
         #sort in python are guaranteed to be stable :D
-        self.pairs = sorted(pairs, key= lambda x: x[1])
-        self.pairs = sorted(self.pairs, key= lambda x: x[0])
+        self.pairs = sorted(pairs, key= lambda x: x[0])
+        self.pairs = sorted(self.pairs, key= lambda x: x[1])
 
     def isGoalState(self):
         if self.currFloor != FLOOR_COUNT - 1:#goal state will be reached when elevator is on upper floor
@@ -63,10 +64,12 @@ class State:
                     for chosenChips in combinations(currChips,c):
                         for chosenGens in combinations(currGenerators, g):
                             
-                            #print("c:", chosenChips , " - g:", chosenGens)
+                            print("c:", chosenChips , " - g:", chosenGens)
+                            self.dump()
 
+                            newState = None
+                            newPairs = deepcopy(self.pairs)
                             if self.currFloor < FLOOR_COUNT: #go up
-                                newPairs = self.pairs[:] #deep copy!
                                 for cc in chosenChips:
                                     newPairs[cc][0] += 1
 
@@ -80,13 +83,12 @@ class State:
                                     pairs     = newPairs
                                 )
 
-                                #newState.print()
+                                newState.dump()
 
                                 if newState.isValid():
                                     adjStates.append(newState)
 
                             if self.currFloor > 0: #go down
-                                newPairs = self.pairs[:] #deep copy!
                                 for cc in chosenChips:
                                     newPairs[cc][0] -= 1
 
@@ -99,10 +101,11 @@ class State:
                                     distance  = self.distance  + 1,
                                     pairs     = newPairs
                                 )
+                            
+                                newState.dump()
 
                                 if newState.isValid():
                                     adjStates.append(newState)
-
 
         return adjStates
 
@@ -112,39 +115,48 @@ class State:
             var+= str(pair[0]) + str(pair[1]) + "|"
         return var
 
-    def print(self):
-        print(self.currFloor,  " -> ", self.pairs, " {", self.distance, "}")
+    def dump(self):
+        print(self.currFloor,  " -> ", self.pairs, " {", self.distance, "} ==>> ", self.hash())
 
 
 #hardcoded start state
 testStartState = State(0,0, [[0,1],[0,2]])
-testStartState.print()
-print(testStartState.hash())
-for state in testStartState.getAdjacent():
-    state.print()
+#testStartState.dump()
+#print()
+#for state in testStartState.getAdjacent():
+#    state.dump()
 
-sys.exit()
+#sys.exit()
 
 seen = dict()
 paths = queue.Queue()
 paths.put(testStartState)
+paths.put(testStartState)
 currentState = paths.get()
-while not currentState.isGoalState():
-    
-    print("Curr Distance:", currentState.distance)
+while not currentState.isGoalState() and not paths.empty():
+
+    currentState.dump()    
+    print("\tCurr Distance:", currentState.distance)
 
     seen[currentState.hash()] = 1
     
-    adjStates = currentState.getAdjacent()
-    print(len(adjStates))
+    for state in currentState.getAdjacent():
+        print("\tvalid ones:")
+        state.dump()
+        paths.put(state)
+
+    print("\tcurr paths: ", paths.qsize())
 
     currentState = paths.get()
-    while currentState.hash() in seen:
+    while currentState.hash() in seen and not paths.empty():
         currentState = paths.get()
 
-print("found! ")
-print(currentState.currFloor)
-print()
-print(currentState.distance)
-print()
-print(currentState.pairs)
+if currentState.isGoalState():
+    print("found! ")
+    print(currentState.currFloor)
+    print()
+    print(currentState.distance)
+    print()
+    print(currentState.pairs)
+else:
+    print("something went wrong")
