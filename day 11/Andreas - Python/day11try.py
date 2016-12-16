@@ -3,6 +3,7 @@ import sys
 from copy import deepcopy
 from itertools import combinations
 
+
 FLOOR_COUNT = 4
 
 class State:
@@ -34,12 +35,12 @@ class State:
         #=> invalid : find a chip that is with another generator
         i = 0
         while i < len(self.pairs):
-            j = i + 1
+            j = 0
             while j < len(self.pairs):
-
-                if self.pairs[i][0] != self.pairs[i][1] \
-                    and self.pairs[i][0] == self.pairs[j][1]:
-                    return False
+                if j != i:
+                    if self.pairs[i][0] != self.pairs[i][1] \
+                        and self.pairs[i][0] == self.pairs[j][1]:
+                        return False
 
                 j+=1
             i+=1
@@ -65,11 +66,9 @@ class State:
                         for chosenGens in combinations(currGenerators, g):
                             
                             print("c:", chosenChips , " - g:", chosenGens)
-                            self.dump()
 
-                            newState = None
                             newPairs = deepcopy(self.pairs)
-                            if self.currFloor < FLOOR_COUNT: #go up
+                            if self.currFloor < FLOOR_COUNT - 1: #go up
                                 for cc in chosenChips:
                                     newPairs[cc][0] += 1
 
@@ -88,6 +87,7 @@ class State:
                                 if newState.isValid():
                                     adjStates.append(newState)
 
+                            newPairs = deepcopy(self.pairs)
                             if self.currFloor > 0: #go down
                                 for cc in chosenChips:
                                     newPairs[cc][0] -= 1
@@ -116,42 +116,39 @@ class State:
         return var
 
     def dump(self):
-        print(self.currFloor,  " -> ", self.pairs, " {", self.distance, "} ==>> ", self.hash())
+        print(self.currFloor,  " -> ", self.pairs, " {", self.distance, "} ==>> ", self.hash(), " ==>> ", self.isValid())
 
 
 #hardcoded start state
 testStartState = State(0,0, [[0,1],[0,2]])
-#testStartState.dump()
-#print()
-#for state in testStartState.getAdjacent():
-#    state.dump()
-
-#sys.exit()
 
 seen = dict()
 paths = queue.Queue()
 paths.put(testStartState)
-paths.put(testStartState)
 currentState = paths.get()
-while not currentState.isGoalState() and not paths.empty():
-
-    currentState.dump()    
-    print("\tCurr Distance:", currentState.distance)
-
-    seen[currentState.hash()] = 1
+while currentState is not None and not currentState.isGoalState():
     
-    for state in currentState.getAdjacent():
-        print("\tvalid ones:")
-        state.dump()
-        paths.put(state)
+    if not currentState.hash() in seen:
+        seen[currentState.hash()] = 1
 
-    print("\tcurr paths: ", paths.qsize())
+        currentState.dump()    
+        print("\tCurr Distance:", currentState.distance)
 
-    currentState = paths.get()
-    while currentState.hash() in seen and not paths.empty():
+        for state in currentState.getAdjacent():
+            paths.put(state)
+
+        print("\tcurr paths: ", paths.qsize(), "\n\n")
+
+    else:
+        print("Skipping - ", currentState.hash(), " -> already seen")
+
+    if paths.empty(): #concurrent => the get function will just block and wait for input
+        currentState = None
+    else:
         currentState = paths.get()
 
-if currentState.isGoalState():
+
+if currentState is not None and currentState.isGoalState():
     print("found! ")
     print(currentState.currFloor)
     print()
@@ -159,4 +156,4 @@ if currentState.isGoalState():
     print()
     print(currentState.pairs)
 else:
-    print("something went wrong")
+    print("something went wrong </3")
