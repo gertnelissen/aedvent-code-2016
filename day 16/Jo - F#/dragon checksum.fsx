@@ -1,11 +1,7 @@
 #r @"..\..\0 lib\F#\Unquote.dll"
 open Swensen.Unquote
 
-let switch =
-    function
-    | '0' -> '1'
-    | '1' -> '0'
-    | unknown -> failwithf "That's not a bit: %c" unknown
+let switch = not
 
 let double word =
     let a = word
@@ -13,7 +9,7 @@ let double word =
         a
         |> List.rev
         |> List.map switch
-    a @ ['0'] @ b
+    a @ [false] @ b
 
 let rec lengthen increaser maxLength word =
     if maxLength <= List.length word then
@@ -22,6 +18,7 @@ let rec lengthen increaser maxLength word =
         lengthen increaser maxLength (increaser word)
 
 let isEven number = number % 2 = 0
+
 let pairs list =
     list
     |> List.pairwise
@@ -31,8 +28,8 @@ let pairs list =
 
 let compress =
     function
-    | (a,b) when a = b -> '1'
-    | _ -> '0'
+    | (a,b) when a = b -> true
+    | _ -> false
 
 let rec checksum word = 
     let compressed = 
@@ -47,19 +44,31 @@ let rec checksum word =
 let printAndContinue msg stream =
     printfn msg;
     stream
+
+let toBit =
+    function
+    | '0' -> false
+    | '1' -> true
+    | unknown -> failwithf "Not a binary digit: %A" unknown
+
+let bitToString = 
+    function
+    | true -> "1"
+    | false -> "0"
+
 let checksumForDataOfLength l (input : string) =
-    lengthen double l (input |> Seq.toList)
+    lengthen double l (input |> Seq.toList |> List.map toBit)
     |> printAndContinue "found the random data!"
     |> List.truncate l
     |> printAndContinue "truncated data!"
     |> checksum
     |> printAndContinue "checksummed it!"
-    |> Seq.map string
+    |> Seq.map bitToString
     |> String.concat ""
 
 printfn "Testing..."
 let toString = Seq.map string >> String.concat ""
-let testDouble = Seq.toList >> double >> toString
+let testDouble = Seq.toList >> List.map toBit >> double >> List.map bitToString >> toString
 test <@ testDouble "1" = "100" @>
 test <@ testDouble "0" = "001" @>
 test <@ testDouble "11111" = "11111000000" @>
@@ -69,7 +78,7 @@ test <@ lengthen (fun x -> 'a' :: x) 3 ['b'] = ['a';'a';'b'] @>
 
 test <@ pairs [1;2;3;4] = [(1,2); (3,4)] @>
 
-let testChecksum = Seq.toList >> checksum >> toString
+let testChecksum = Seq.toList >> List.map toBit >> checksum >> List.map bitToString >> toString
 test <@ testChecksum "110010110100" = "100" @>
 
 test <@ checksumForDataOfLength 20 "10000" = "01100" @>
