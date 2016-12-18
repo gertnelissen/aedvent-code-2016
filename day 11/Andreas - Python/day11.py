@@ -23,7 +23,7 @@ class State:
         if self.currFloor != FLOOR_COUNT - 1:#goal state will be reached when elevator is on upper floor
             return False;
 
-        for element in state.pairs:
+        for element in self.pairs:
             for item in element:
                 if item != FLOOR_COUNT - 1:
                     return False
@@ -65,7 +65,7 @@ class State:
                     for chosenChips in combinations(currChips,c):
                         for chosenGens in combinations(currGenerators, g):
                             
-                            print("c:", chosenChips , " - g:", chosenGens)
+                            #print("c:", chosenChips , " - g:", chosenGens)
 
                             newPairs = deepcopy(self.pairs)
                             if self.currFloor < FLOOR_COUNT - 1: #go up
@@ -82,7 +82,7 @@ class State:
                                     pairs     = newPairs
                                 )
 
-                                newState.dump()
+                                #newState.dump()
 
                                 if newState.isValid():
                                     adjStates.append(newState)
@@ -102,7 +102,7 @@ class State:
                                     pairs     = newPairs
                                 )
                             
-                                newState.dump()
+                                #newState.dump()
 
                                 if newState.isValid():
                                     adjStates.append(newState)
@@ -121,39 +121,90 @@ class State:
 
 #hardcoded start state
 testStartState = State(0,0, [[0,1],[0,2]])
+examplesStates = [
+    State(0,0, [[0,1],[0,2]]),
+    State(1,1, [[1,1],[0,2]]),
+    State(2,2, [[2,2],[0,2]]),
+    State(1,3, [[1,2],[0,2]]),
+    State(0,4, [[0,2],[0,2]]),
+    State(1,5, [[1,2],[1,2]]),
+    State(2,6, [[2,2],[2,2]]),
+    State(3,7, [[3,2],[3,2]]),
+    State(2,8, [[2,2],[3,2]]),
+    State(3,9, [[2,3],[3,3]]),
+    State(2,10,[[2,3],[2,3]]),
+    State(3,11,[[3,3],[3,3]])
+]
+
+#realinput:
+#The first floor contains
+#a polonium generator, 
+#a thulium generator, a thulium-compatible microchip, 
+#a promethium generator, 
+#a ruthenium generator, a ruthenium-compatible microchip, 
+#a cobalt generator, cobalt-compatible microchip.
+
+#The second floor contains 
+#a polonium-compatible microchip 
+#a promethium-compatible microchip.
+
+#The third floor contains nothing relevant.
+#The fourth floor contains nothing relevant.
+
+realInput = State(0,0, [[0,1],[0,0],[0,1],[0,0],[0,0]])
+
+#for s in examplesStates:
+#    print(s.hash())
+
+#for i in range(len(examplesStates)-1):
+#    state = examplesStates[i]
+#    nextState = examplesStates[i+1].hash()
+#
+#    print("state ", i , " -> ", state.hash())
+#
+#    print("nextSate ", nextState)
+#
+#    print("adjacentStates")
+#    adjHashes = [s.hash() for s in state.getAdjacent()]
+#    
+#    print(nextState in adjHashes)
+#    
+#    for h in adjHashes:
+#        print(h)
+#
+#    print()
+#    print()
+#
+#    input()
+#sys.exit()
+
 
 seen = dict()
 paths = queue.Queue()
-paths.put(testStartState)
-currentState = paths.get()
+currentState = realInput #testStartState
 while currentState is not None and not currentState.isGoalState():
-    
-    if not currentState.hash() in seen:
-        seen[currentState.hash()] = 1
+#    print(currentState.hash(), end="")
 
-        currentState.dump()    
-        print("\tCurr Distance:", currentState.distance)
+    if not currentState.hash() in seen:
+#        print(" -> Not Seen -> ")
+
+        seen[currentState.hash()] = 1
 
         for state in currentState.getAdjacent():
             paths.put(state)
+#           print("\t", state.hash())
 
-        print("\tcurr paths: ", paths.qsize(), "\n\n")
+#    else:
+#        print(" -> Seen -> Skip")
 
-    else:
-        print("Skipping - ", currentState.hash(), " -> already seen")
+#    print("Queue size: ", paths.qsize(), " - Seen size: ", len(seen.keys()))
+#    print()
+#    print()
+#    input()
 
     if paths.empty(): #concurrent => the get function will just block and wait for input
         currentState = None
     else:
         currentState = paths.get()
 
-
-if currentState is not None and currentState.isGoalState():
-    print("found! ")
-    print(currentState.currFloor)
-    print()
-    print(currentState.distance)
-    print()
-    print(currentState.pairs)
-else:
-    print("something went wrong </3")
+print(currentState.hash(), " found at ", currentState.distance)
