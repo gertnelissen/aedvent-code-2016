@@ -144,6 +144,13 @@ examplesStates = [
 #a ruthenium generator, a ruthenium-compatible microchip, 
 #a cobalt generator, cobalt-compatible microchip.
 
+
+#part two:
+#An elerium generator.
+#An elerium-compatible microchip.
+#A dilithium generator.
+#A dilithium-compatible microchip.
+
 #The second floor contains 
 #a polonium-compatible microchip 
 #a promethium-compatible microchip.
@@ -151,7 +158,11 @@ examplesStates = [
 #The third floor contains nothing relevant.
 #The fourth floor contains nothing relevant.
 
-realInput = State(0,0, [[0,1],[0,0],[0,1],[0,0],[0,0]])
+#realInput = State(0,0, [[0,1],[0,0],[0,1],[0,0],[0,0]]) #Part1
+realInput = State(0,0, [[0,1],[0,0],[0,1],[0,0],[0,0],[0,0],[0,0]]) #Part 2
+
+
+
 
 #for s in examplesStates:
 #    print(s.hash())
