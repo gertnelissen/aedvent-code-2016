@@ -77,10 +77,11 @@ let fasterCount firstRow nbRows =
             then
                 None 
             else 
-                printfn "Generating row %d" rowNb
+//                printfn "Generating row %d" rowNb
                 let next = nextRow lastRow
                 Some (numberOf S [lastRow], (rowNb + 1, next)))
         (1, parse firstRow)
     |> List.sum
 let pt1fast = fasterCount input 40
-let pt2 = numberOf S <| generate input 400000
+#time
+let pt2 = fasterCount input 400000
