@@ -16,7 +16,7 @@ func part1() {
 	defer track(time.Now(), "part 1")
 	elves := make([]int, MAX_ELVES)
 	for i := range elves {
-		elves[i] = 1 // elves[k] = # presents for elf #k+1
+		elves[i] = 1 // Each elf has a present
 	}
 	for {
 	Round:
@@ -26,14 +26,12 @@ func part1() {
 			}
 			for k := i + 1; k < MAX_ELVES; k++ {
 				if elves[k] != 0 {
-					elves[i] = elves[i] + elves[k]
 					elves[k] = 0
 					continue Round
 				}
 			} //Reached end of circle
 			for k := 0; k < i; k++ {
 				if elves[k] != 0 {
-					elves[i] = elves[i] + elves[k]
 					elves[k] = 0
 					continue Round
 				}
@@ -48,7 +46,7 @@ func part2() {
 	defer track(time.Now(), "part 2")
 	elves := make([]int, MAX_ELVES)
 	for i := 0; i < MAX_ELVES; i++ {
-		elves[i] = i + 1 //elves[k] = the original number for the elf now at position k
+		elves[i] = i + 1 // Elf at position i has number i+1
 	}
 	var next, opp int
 	for {
