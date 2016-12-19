@@ -2,7 +2,7 @@ noElves = 3005290#5
 
 
 #they all start with one present
-hasPresent = list() #could have been a list, but that was too mainstream
+hasPresent = list()
 for i in range(noElves):
 	hasPresent.append(True)
 
